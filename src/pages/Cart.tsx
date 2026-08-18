@@ -2,31 +2,63 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { removeFromCart, incrementQuantity, decrementQuantity, clearCart } from '../redux/cartSlice';
+import { useAuth } from '../context/AuthContext';
+import { createOrder } from '../api/ordersApi';
 
 const FALLBACK_IMAGE = 'https://via.placeholder.com/80x80?text=No+Image';
 
 const Cart: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { user } = useAuth();
     const items = useAppSelector((state) => state.cart.items);
     const [checkedOut, setCheckedOut] = useState(false);
+    const [checkingOut, setCheckingOut] = useState(false);
+    const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
     const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    const handleCheckout = () => {
-        dispatch(clearCart());
-        setCheckedOut(true);
+    const handleCheckout = async () => {
+        if (!user) {
+            setCheckoutError('You must be logged in to place an order.');
+            return;
+        }
+
+        setCheckingOut(true);
+        setCheckoutError(null);
+
+        try {
+            const orderItems = items.map(({ id, title, price, quantity, image }) => ({
+                id,
+                title,
+                price,
+                quantity,
+                image,
+            }));
+            await createOrder(user.uid, orderItems, totalPrice);
+            dispatch(clearCart());
+            setCheckedOut(true);
+        } catch (error) {
+            setCheckoutError(error instanceof Error ? error.message : 'Unable to place order.');
+        } finally {
+            setCheckingOut(false);
+        }
     };
 
     return (
-        <div className="container p-3">
+        <div className="page-shell cart-shell">
             <button onClick={() => navigate('/')}>Back to Shop</button>
             <h2>Shopping Cart</h2>
 
-            {checkedOut && <div className="alert alert-success">Order placed! Your cart has been cleared.</div>}
+            {checkedOut && (
+                <div className="alert alert-success">
+                    Order placed! Check your <button className="link-button" onClick={() => navigate('/orders')}>order history</button>.
+                </div>
+            )}
+            {checkoutError && <p className="auth-error">{checkoutError}</p>}
 
-            {items.length === 0 && !checkedOut && <p>Your cart is empty.</p>} 
+            {items.length === 0 && !checkedOut && <p>Your cart is empty.</p>}
 
             {items.length > 0 && (
                 <>
@@ -60,7 +92,9 @@ const Cart: React.FC = () => {
                 <h4>Total Items: {totalCount}</h4>
                 <h4>Total Price: ${totalPrice.toFixed(2)}</h4>
 
-                <button onClick={handleCheckout}>Checkout</button>
+                <button onClick={handleCheckout} disabled={checkingOut}>
+                    {checkingOut ? 'Placing Order…' : 'Checkout'}
+                </button>
               </>
             )}
         </div>

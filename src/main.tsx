@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { AuthProvider } from './context/AuthContext'; 
+import './index.css';
 
 const queryClient = new QueryClient();
 
@@ -17,7 +19,9 @@ createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </Provider>
     </QueryClientProvider>
   </StrictMode>,

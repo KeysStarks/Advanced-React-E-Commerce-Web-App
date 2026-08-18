@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import type { Category, Product } from '../types/catalog';
 import ProductCard from '../components/ProductCard';
-import { useNavigate } from 'react-router-dom';
 import { useCategories, useProducts } from '../hooks';
 
 const Home: React.FC = () => {
-  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('');
 
   const {
@@ -27,18 +25,21 @@ const Home: React.FC = () => {
   if (isError) return <p>Something went wrong: {error?.message}</p>;
 
   return (
-    <div>
-      <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-        <option value="">All Categories</option>
-        {categories.map((category: Category) => (
-          <option value={category} key={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-      <button onClick={() => navigate('/profile')}>Go to Profile Page</button>
-      <button onClick={() => navigate('/cart')}>View Cart</button>
-      <div className="d-flex flex-wrap gap-3 justify-content-center">
+    <div className="home-page">
+      <div className="home-toolbar">
+        <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+          <option value="">All Categories</option>
+          {categories.map((category: Category) => (
+            <option value={category} key={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+        <button onClick={() => setSelectedCategory('')} disabled={!selectedCategory}>
+          Clear Filter
+        </button>
+      </div>
+      <div className="home-grid">
         {products.map((product: Product) => (
           <ProductCard key={product.id} product={product} />
         ))}

@@ -1,2 +1,19 @@
-export { fetchCategories, fetchProducts, fetchProductsByCategory } from './catalogApi';
-export { catalogQueryKeys, categoriesQueryOptions, productsQueryOptions, productsByCategoryQueryOptions } from './catalogQueries';
+export {
+  fetchCategories,
+  fetchProducts,
+  fetchProductsByCategory,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from './firestoreProducts';
+export type { NewProduct } from './firestoreProducts';
+export {
+  catalogQueryKeys,
+  categoriesQueryOptions,
+  productsQueryOptions,
+  productsByCategoryQueryOptions,
+  useCreateProduct,
+  useUpdateProduct,
+  useDeleteProduct,
+} from './catalogQueries';
+export { fetchFakeStoreProducts } from './fakeStoreImport';
