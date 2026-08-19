@@ -2,6 +2,10 @@
 
 A full-stack e-commerce demo built with React, TypeScript, React Query, Redux Toolkit, and Firebase (Authentication + Firestore).
 
+## Live Demo
+
+https://advanced-react-e-commerce-web-app-brown.vercel.app/
+
 ## What it does
 
 - Registers, logs in, and logs out users with Firebase Authentication
@@ -98,20 +102,3 @@ npm run dev
 - `npm run dev` - start the development server
 - `npm run build` - build for production
 - `npm run lint` - run ESLint
-
-## Video Presentation Checklist
-
-- Keep the video under 5 minutes
-- Make sure your face is visible on camera
-- Briefly explain what the app does
-- Explain how Firebase Auth/Firestore, React Query, and Redux Toolkit are used
-- Show a quick live demo: register, add a product, add to cart, check out, view order history
-
-## Demo Talk Track
-
-1. "This is an e-commerce app with Firebase Authentication — users register and log in, and each account gets a Firestore profile."
-2. "Products live in Firestore now instead of an external API, and any signed-in user can create, edit, or delete them from the Manage Products page."
-3. "I use React Query to fetch and cache products, categories, and orders from Firestore."
-4. "I use Redux Toolkit for the cart because that state is shared across the app, and it's persisted to sessionStorage."
-5. "When the user checks out, I write an order document to Firestore with the cart items, total, and user ID, then clear the cart."
-6. "Users can revisit their order history and click into any past order to see the full details."
